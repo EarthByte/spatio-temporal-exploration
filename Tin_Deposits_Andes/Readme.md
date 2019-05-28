@@ -1,3 +1,4 @@
 **Tin Deposits in the Andes** 
 
-Instructions: https://github.com/intelligent-exploration/mineralexplorationcourse
+*Instructions: https://github.com/intelligent-exploration/mineralexplorationcourse
+
