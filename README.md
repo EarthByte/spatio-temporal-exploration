@@ -1,2 +1,2 @@
 # GeoDude
-28/05: Tin Deposit - Andes 
+28/05: Tin Deposits - Andes 
