@@ -1,2 +1,3 @@
-# GeoDude
-28/05: Tin Deposits - Andes 
+<h2> # GeoDude
+ <h3> -Tin Deposits - Andes 
+      -Copper Deposits - Philippines West 
