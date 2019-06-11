@@ -1,3 +1,3 @@
-#Copper Deposits due to subduction of Western Margin of Philippines Ocean Plate
+<h1>Copper Deposits due to subduction of Western Margin of Philippines Ocean Plate
 
-##Screenshot of the area
+<h2><i>Screenshot of the area</i>
