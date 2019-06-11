@@ -1,3 +1,4 @@
-<h2> # GeoDude
+<h2> # GeoDude #
  <h3> -Tin Deposits - Andes 
-      -Copper Deposits - Philippines West 
+      
+  -Copper Deposits - Philippines West 
