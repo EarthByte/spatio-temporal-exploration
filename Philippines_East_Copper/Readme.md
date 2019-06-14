@@ -1,5 +1,8 @@
 <h1>Copper Deposits due to subduction of Western Margin of Philippines Ocean Plate
   
+<h2> Miscellaneous Files (Age Grids, Convergence Data, Rotation Files, Plate Polygons):-
+  https://drive.google.com/drive/folders/1L9eYfU-y5qOGT2UkaiWvp8cnjdWgWC_X?usp=sharing  
+  
 <h2> Link to the Generated Pickle Files:-
   
 https://drive.google.com/drive/folders/13XTaNxWBFGEs6Tv9m4XucO1gpaNfQ62B?usp=sharing
