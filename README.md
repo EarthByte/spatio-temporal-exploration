@@ -1,4 +1,1 @@
-<h2> # GeoDude #
- <h3> -Tin Deposits : Andes 
-      
-  -Copper Deposits : Philippines Plate West 
+<b>cleanconvert.ipynb </b> is a script to convert and clean the downloaded .txt data from EarthChem portal to .shp files retaining variables like lon, lat, age, mineral conc.
