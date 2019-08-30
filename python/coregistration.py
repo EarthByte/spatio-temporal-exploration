@@ -10,10 +10,14 @@ import shapefile
 
 DATA_DIR = './Week10_data/'
 
+# input: degrees between two points on sphere
+# output: straight distance between the two points (assume the earth radius is 1)
+# to get the kilometers, use the return value to multiply by the real earth radius
 def degree_to_straight_distance(degree):
     return math.sin(math.radians(degree)) / math.sin(math.radians(90 - degree/2.))
 
-#the age is a floating-point number. map the floating-point number to the nereast integer time in the range
+
+# the age is a floating-point number. map the floating-point number to the nereast integer time in the range
 def get_time_from_age(ages, start, end, step):
     ret=[]
     times=range(start, end+1, step)
@@ -31,11 +35,21 @@ def get_time_from_age(ages, start, end, step):
         
     return ret  
 
+# copy the attributes around
 def get_attributes(point, data, index):
     point[7] = data[index, 3]
     point[8] = data[index, 9]
-        
-
+    point[9] = data[index, 15]
+    point[10] = data[index, 4]
+    point[11] = data[index, 12]
+    point[12] = data[index, 5]
+    point[13] = data[index, 13]
+    point[14] = data[index, 10]
+    point[15] = data[index, 11]
+    point[16] = data[index, 8]
+    point[17] = data[index, 7]
+    
+ 
 tic=time.time()
 
 raster_region_1 = 5 #degrees
@@ -46,8 +60,7 @@ grid_x, grid_y = np.mgrid[-180:181, -90:91]
 grid_points = [pygplates.PointOnSphere((row[1],row[0])).to_xyz() for row in zip(grid_x.flatten(), grid_y.flatten())]
 grid_tree = scipy.spatial.cKDTree(grid_points)
 
-
-#prepare points
+#load files
 f = np.loadtxt(DATA_DIR + "Muller_convergence/subStats_0.csv", delimiter=',')
 trench_points=f[(f[:,17])==201][379:]
 rotation_model = pygplates.RotationModel(DATA_DIR + "Muller_gplates/Global_EarthByte_230-0Ma_GK07_AREPS.rot" )
@@ -57,7 +70,10 @@ andes_points_len = len(recs)
 randomAges=np.random.randint(1,230,size=andes_points_len)
 times = get_time_from_age(np.array(recs)[:,6], 0, 230, 1)
 
+# create buffer for points
 points=np.full((len(trench_points)*230 + andes_points_len*2,19), float('nan'))
+
+# fill the andes deposit points with the real age
 for i in range(andes_points_len):
     points[i][0]=recs[i][3] #lon
     points[i][1]=recs[i][4] #lat
@@ -67,6 +83,7 @@ for i in range(andes_points_len):
     
 points_with_age_size=i+1
 
+# fill andes deposit points with random ages
 for i in range(andes_points_len): 
     points[points_with_age_size+i][0]=recs[i][3] #lon
     points[points_with_age_size+i][1]=recs[i][4] #lat
@@ -76,6 +93,7 @@ for i in range(andes_points_len):
     
 points_with_random_age_size=i+1
 
+# fill trench points for each time step from start_time to end_time
 start_idx = points_with_age_size + points_with_random_age_size
 i=0
 for p in trench_points:
@@ -98,13 +116,15 @@ for t, group in groupby(sorted_points, lambda x: int(x[5])):  #group by time
         "Muller_etal_2016_AREPS_Agegrids_v1.11/netCDF_0-230Ma/EarthByte_AREPS_v1.11_Muller_etal_2016_AgeGrid-" + \
         str(t)+".nc",'r')
     z = rasterfile.variables['z'][:] #masked array
-    z = z[::10,::10]
+    z = z[::10,::10] #TODO: make sure the grid is 1 degree by 1 degree
     z = z.flatten()
     
+    # build the points tree
     data=np.loadtxt(DATA_DIR + "Muller_convergence/subStats_"+str(t)+".csv", delimiter=',') 
     points_3d = [pygplates.PointOnSphere((row[1],row[0])).to_xyz() for row in data]
     points_tree = scipy.spatial.cKDTree(points_3d)
    
+    # reconstruct the points
     rotated_points = []
     grouped_points = list(group)
     for point in grouped_points:
@@ -114,12 +134,14 @@ for t, group in groupby(sorted_points, lambda x: int(x[5])):  #group by time
         rotated_points.append(geom.to_xyz())
         point[3], point[2] = geom.to_lat_lon()
     
+    # query the trees
     dists, indices = points_tree.query(
         rotated_points, k=1, distance_upper_bound=degree_to_straight_distance(raster_region_1)) 
     all_neighbors = grid_tree.query_ball_point(
             rotated_points, 
             degree_to_straight_distance(raster_region_1))
     
+    # get the attributes, query the tree again if necessary
     for point, dist, idx, neighbors in zip(grouped_points, dists, indices, all_neighbors):
         if idx < len(data):
             get_attributes(point, data, idx)
@@ -142,24 +164,9 @@ for t, group in groupby(sorted_points, lambda x: int(x[5])):  #group by time
             if np.sum(~z[neighbors_2].mask)>0:
                 point[6] = np.nanmean(z[neighbors_2])
             
-print(points)
- 
-'''    
-    segmentLength=f[index,3]
-        slabLength=f[index,9]
-        distSlabEdge=f[index,15]
-
-        SPcoregNor=f[index,4]
-        SPcoregPar=f[index,12]
-        OPcoregNor=f[index,5]
-        OPcoregPar=f[index,13]
-        CONVcoregNor=f[index,10]
-        CONVcoregPar=f[index,11]
-
-        subPolCoreg=f[index,8]
-        subOblCoreg=f[index,7]
-        return [lon,lat,paleo_lon,paleo_lat,age, time, c2,segmentLength,slabLength,distSlabEdge,\
-             SPcoregNor,SPcoregPar,OPcoregNor,OPcoregPar,CONVcoregNor,CONVcoregPar,subPolCoreg,subOblCoreg]
-'''
+#print(points)
+np.savetxt('./andes_real_age.csv',points[:points_with_age_size], fmt='%.2f')
+np.savetxt('./andes_random_age.csv',points[points_with_age_size:points_with_random_age_size+points_with_age_size], fmt='%.2f')
+np.savetxt('./trench_points.csv',points[points_with_random_age_size+points_with_age_size:], fmt='%.2f')
 toc=time.time()
-print("Time taken:", toc-tic, " seconds") 
+print("Time taken:", toc-tic, " seconds")

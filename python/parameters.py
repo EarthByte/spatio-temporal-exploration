@@ -13,6 +13,7 @@ parameters = {
     "velocity_delta_time" : 1,
     "convergence_data_filename_prefix" : "conv_data",
     "convergence_data_filename_ext" : "csv",
-    "result_dir" : "../results/"
+    "result_dir" : "./convergence_data",
+    "anchor_plate_id" : 0
 
 }
