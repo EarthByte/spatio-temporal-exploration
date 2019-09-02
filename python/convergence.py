@@ -35,7 +35,7 @@ if __name__ == '__main__':
             output_gpml_filename = None,
             **kwargs)
     
-    result_dir=p['result_dir']
+    result_dir=p['convergence_data_dir']
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
     os.system('mv {0}*{1} {2}'.format( 
