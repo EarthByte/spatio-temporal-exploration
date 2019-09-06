@@ -37,7 +37,7 @@ from parameters import parameters as param
 #22 the subducting plate absolute velocityobliquity angle (in degrees)
 #23 the subducting plate absolute velocity orthogonal       
 #24 the subducting plate absolute velocity parallel
-#26 plate id of the input point
+#25 plate id of the input point
 ROW_LEN = 26
 
 def main():
@@ -72,19 +72,7 @@ def main():
 
     # copy the attributes around
     def get_attributes(point, data, index):
-        point[7:24] = data[index, 2:19]
-        '''
-        point[8] = data[index, 9]
-        point[9] = data[index, 15]
-        point[10] = data[index, 4]
-        point[11] = data[index, 12]
-        point[12] = data[index, 5]
-        point[13] = data[index, 13]
-        point[14] = data[index, 10]
-        point[15] = data[index, 11]
-        point[16] = data[index, 8]
-        point[17] = data[index, 7]
-        '''
+        point[7:25] = data[index, 2:20]
 
     tic=time.time()
 
@@ -104,11 +92,11 @@ def main():
     reader = shapefile.Reader(param['andes_data'])
     recs    = reader.records()
     andes_points_len = len(recs)
-    randomAges=np.random.randint(start_time+1, end_time-1, size=andes_points_len)
-    times = get_time_from_age(np.array(recs)[:,6], start_time, end_time-1, time_step)
+    randomAges=np.random.randint(start_time+1, end_time, size=andes_points_len)
+    times = get_time_from_age(np.array(recs)[:,6], start_time, end_time, time_step)
 
     # create buffer for points
-    points=np.full((len(trench_points)*len(range(end_time-1)) + andes_points_len*2, ROW_LEN), float('nan'))
+    points=np.full((len(trench_points)*len(range(end_time)) + andes_points_len*2, ROW_LEN), float('nan'))
 
     # fill the andes deposit points with the real age
     for i in range(andes_points_len):
@@ -134,7 +122,7 @@ def main():
     start_idx = points_with_age_size + points_with_random_age_size
     i=0
     for p in trench_points:
-        for t in range(end_time-1):
+        for t in range(end_time):
             points[start_idx+i][0]=p[0] #lon
             points[start_idx+i][1]=p[1] #lat
             points[start_idx+i][4]=0 #age

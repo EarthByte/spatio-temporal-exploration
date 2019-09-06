@@ -3,7 +3,7 @@ parameters = {
     "plate_tectonic_tools_path" : "../../PlateTectonicTools/ptt/",
     "time" : {
         "start" : 0,
-        "end"   : 231,
+        "end"   : 230,
         "step"  : 1
     },
     "region_1" : 5,
