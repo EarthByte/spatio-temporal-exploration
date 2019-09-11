@@ -1,3 +1,11 @@
+### Rotation Model and Age Grids:
+
+The old AREPS plate model has some serious bugs which have been fixed in version 1.15.  
+
+The v1.15 age grids can be found here https://www.earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2016_AREPS/Muller_etal_2016_AREPS_Agegrids/Muller_etal_2016_AREPS_Agegrids_v1.15/.
+
+The v1.15 rotation model is here https://www.earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2016_AREPS/Muller_etal_2016_AREPS_Supplement/Muller_etal_2016_AREPS_Supplement_v1.15/
+
 ### Dependencies:
 
 pygplates -- https://www.gplates.org/download.html
