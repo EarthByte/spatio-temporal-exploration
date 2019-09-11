@@ -18,7 +18,7 @@ parameters = {
     "convergence_data_dir" : "./convergence_data/",
     "anchor_plate_id" : 0,
     "age_grid_dir" : '../data/AgeGrids/',
-    "age_grid_prefix" : 'EarthByte_AREPS_v1.11_Muller_etal_2016_AgeGrid-',
+    "age_grid_prefix" : 'EarthByte_AREPS_v1.15_Muller_etal_2016_AgeGrid-',
     "age_grid_url_prefix" : 'https://www.earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2016_AREPS/' +                
             'Muller_etal_2016_AREPS_Agegrids/Muller_etal_2016_AREPS_Agegrids_v1.15/netCDF-4_0-230Ma/' +
              'EarthByte_AREPS_v1.15_Muller_etal_2016_AgeGrid-',
