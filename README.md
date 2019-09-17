@@ -34,6 +34,11 @@ EarthByte/PlateTectonicTools -- https://github.com/EarthByte/PlateTectonicTools.
 
 Run "python convergence.py 2>log"
 
+### Additional step:
+
+Run extract_earth_chem.py to extract interesting data from EarthChem data. Run "python extract_earth_chem.py -h" to see 
+how to use the script.
+
 ### Step 2:
 
 Run "python coregistration.py"
