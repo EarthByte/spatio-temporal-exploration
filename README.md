@@ -1,6 +1,6 @@
 ### Getting started
 
-Open python/workflow.ipynb and follow the instructions inside.
+Open **python/workflow.ipynb** and follow the instructions inside.
 
 ### Rotation Model and Age Grids:
 
