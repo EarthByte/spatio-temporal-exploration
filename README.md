@@ -34,3 +34,6 @@ netCDF4 -- https://github.com/Unidata/netcdf4-python
 
 EarthByte/PlateTectonicTools -- https://github.com/EarthByte/PlateTectonicTools.git. Edit "plate_tectonic_tools_path" parameter in python/parameters.py to specify the location of PlateTectonicTools code.
 
+### FAQ
+#### Why am I getting an error "ImportError: No module named subduction_convergence"?
+Answer: The code you are trying to run depends on EarthByte/PlateTectonicTools -- https://github.com/EarthByte/PlateTectonicTools.git. You need to download the PlateTectonicTools code and edit the "plate_tectonic_tools_path" parameter in python/parameters.py to tell the code where to find the PlateTectonicTools code.
