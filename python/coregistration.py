@@ -76,8 +76,8 @@ def main():
 
     tic=time.time()
 
-    region_1 = param['region_1'] #degrees
-    region_2 = param['region_2'] #degrees
+    region_1 = param['region_1'] #in degrees
+    region_2 = param['region_2'] #in degrees
 
     #construct the grid tree
     grid_x, grid_y = np.mgrid[-180:181, -90:91]
@@ -86,16 +86,20 @@ def main():
 
     #load files
     f = np.loadtxt(param['convergence_data_dir'] + param['convergence_data_filename_prefix'] 
-                        + "_0.00." + param['convergence_data_filename_ext'])
-    trench_points=f[(f[:,9])==201]
-    rotation_model = pygplates.RotationModel(param['rotation_files'])
-    reader = shapefile.Reader(param['andes_data'])
+                        + "_0.00." + param['convergence_data_filename_ext']) #all subduction points at time 0
+    trench_points=f[(f[:,9])==201] #subduction points in south america TODO:make this more general
+    
+    rotation_model = pygplates.RotationModel(param['rotation_files']) #load rotation model
+    
+    reader = shapefile.Reader(param['andes_data'])#TODO: make this more general
     recs    = reader.records()
     andes_points_len = len(recs)
-    randomAges=np.random.randint(start_time+1, end_time, size=andes_points_len)
-    times = get_time_from_age(np.array(recs)[:,6], start_time, end_time, time_step)
+    randomAges=np.random.randint(start_time+1, end_time, size=andes_points_len) #generate random ages for andes data
+    times = get_time_from_age(np.array(recs)[:,6], start_time, end_time, time_step)#get integer ages for andes data
 
-    # create buffer for points
+    #create buffer for points. allocate memory in one go, performace consideration
+    #for each trench point, the ages are range(start_time, end_time, time_step)
+    #for each andes point, the ages are one real age and one random age
     points=np.full((len(trench_points)*len(range(end_time)) + andes_points_len*2, ROW_LEN), float('nan'))
 
     # fill the andes deposit points with the real age
@@ -132,11 +136,14 @@ def main():
 
     poins_all_time_size=i+1 
 
+    #at this point, we have prepared all input data. now move on to do the query
 
+    #sort and group by time to improve performance
     sorted_points = sorted(points, key = lambda x: int(x[5])) #sort by time
     from itertools import groupby
     for t, group in groupby(sorted_points, lambda x: int(x[5])):  #group by time
         print(t)
+        #if local age grids do not exist, download them from internet
         age_grid_fn = param['age_grid_dir'] + param['age_grid_prefix'] + str(t) + ".nc"
         if not os.path.isfile(age_grid_fn):
             urllib.urlretrieve(param['age_grid_url_prefix']+str(t)+".nc", age_grid_fn)
@@ -146,16 +153,15 @@ def main():
         z = z[::10,::10] #TODO: make sure the grid is 1 degree by 1 degree
         z = z.flatten()
 
-        # build the points tree
+        # build the points tree at time t
         data=np.loadtxt(param['convergence_data_dir'] + param['convergence_data_filename_prefix'] 
                         + '_{:0.2f}'.format(t) + "." + param['convergence_data_filename_ext']) 
-        
         points_3d = [pygplates.PointOnSphere((row[1],row[0])).to_xyz() for row in data]
         points_tree = scipy.spatial.cKDTree(points_3d)
 
         # reconstruct the points
         rotated_points = []
-        grouped_points = list(group)
+        grouped_points = list(group)#must make a copy, the items in "group" will be gone after first iteration
         for point in grouped_points:
             point_to_rotate = pygplates.PointOnSphere((point[1], point[0]))
             finite_rotation = rotation_model.get_rotation(point[5], int(point[-1]))
@@ -163,26 +169,28 @@ def main():
             rotated_points.append(geom.to_xyz())
             point[3], point[2] = geom.to_lat_lon()
 
-        # query the trees
+        # query the tree of points (region_1)
         dists, indices = points_tree.query(
             rotated_points, k=1, distance_upper_bound=degree_to_straight_distance(region_1)) 
+        # query the tree of age grid (region_1)
         all_neighbors = grid_tree.query_ball_point(
                 rotated_points, 
                 degree_to_straight_distance(region_1))
 
-        # get the attributes, query the tree again if necessary
+        # get the attributes, query the tree again if necessary (region_2)
         for point, dist, idx, neighbors in zip(grouped_points, dists, indices, all_neighbors):
+            #for points tree
             if idx < len(data):
                 get_attributes(point, data, idx)
             else:
-                #try again with a bigger region
+                #try again with a bigger region (region_2)
                 dist_2, index_2 = points_tree.query(
                     pygplates.PointOnSphere((point[3], point[2])).to_xyz(), 
                     k=1, 
                     distance_upper_bound=degree_to_straight_distance(region_2))
                 if index_2 < len(data):
                     get_attributes(point, data, index_2)
-
+            #for grid tree
             if np.sum(~z[neighbors].mask)>0:
                 point[6] = np.nanmean(z[neighbors])
             else: 
@@ -194,6 +202,7 @@ def main():
                     point[6] = np.nanmean(z[neighbors_2])
 
     #print(points)
+    #TODO: make the code below more general
     np.savetxt('./andes_real_age.csv',points[:points_with_age_size], fmt='%.2f')
     np.savetxt('./andes_random_age.csv',points[points_with_age_size:points_with_random_age_size+points_with_age_size], fmt='%.2f')
     np.savetxt('./trench_points.csv',points[points_with_random_age_size+points_with_age_size:], fmt='%.2f')

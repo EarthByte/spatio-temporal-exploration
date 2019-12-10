@@ -9,6 +9,8 @@ sys.path.append(p["plate_tectonic_tools_path"])
 from subduction_convergence import subduction_convergence_over_time
 import numpy as np
 
+#basicall the subduction_convergence.py does all the work.
+#see https://github.com/EarthByte/PlateTectonicTools/blob/master/ptt/subduction_convergence.py
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=2)
     pp.pprint(p)  
