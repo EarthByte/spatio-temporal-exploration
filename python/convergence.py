@@ -40,5 +40,7 @@ if __name__ == '__main__':
         os.makedirs(result_dir)
     os.system('mv {0}*{1} {2}'.format( 
         p['convergence_data_filename_prefix'], p['convergence_data_filename_ext'], result_dir))
+    print("")
+    print('Convergence completed successfully!')
     print('The result data has been saved in {}!'.format(result_dir))        
 
