@@ -11,6 +11,29 @@ import numpy as np
 
 #basicall the subduction_convergence.py does all the work.
 #see https://github.com/EarthByte/PlateTectonicTools/blob/master/ptt/subduction_convergence.py
+
+#The columns in the output file
+#0 lon
+#1 lat
+#2 subducting convergence (relative to trench) velocity magnitude (in cm/yr)
+#3 subducting convergence velocity obliquity angle (angle between trench normal vector and convergence velocity vector)
+#4 trench absolute (relative to anchor plate) velocity magnitude (in cm/yr)
+#5 trench absolute velocity obliquity angle (angle between trench normal vector and trench absolute velocity vector)
+#6 length of arc segment (in degrees) that current point is on
+#7 trench normal azimuth angle (clockwise starting at North, ie, 0 to 360 degrees) at current point
+#8 subducting plate ID
+#9 trench plate ID
+#10 distance (in degrees) along the trench line to the nearest trench edge
+#11 the distance (in degrees) along the trench line from the start edge of the trench
+#12 convergence velocity orthogonal (in cm/yr)
+#13 convergence velocity parallel  (in cm/yr) 
+#14 the trench plate absolute velocity orthogonal (in cm/yr)
+#15 the trench plate absolute velocity orthogonal (in cm/yr)
+#16 the subducting plate absolute velocity magnitude (in cm/yr)
+#17 the subducting plate absolute velocityobliquity angle (in degrees)
+#18 the subducting plate absolute velocity orthogonal       
+#19 the subducting plate absolute velocity parallel
+
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=2)
     pp.pprint(p)  
