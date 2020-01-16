@@ -169,10 +169,11 @@ def main():
     if not os.path.isdir(out_dir):
         os.mkdir(out_dir)
    
-
+    count=0
     #query the vector data
-    result=[None]*len(input_data)
     for in_file in param['vector_files']:
+        input_data = input_data_backup
+        result=[None]*len(input_data)
         for region in sorted(param['regions']):
             print(region)
             ret = query_vector(input_data, in_file, region)
@@ -186,13 +187,14 @@ def main():
             
             input_data = new_input_data
                     
-        save_data(result, out_dir+'/0_' + os.path.basename(in_file).split("_")[0] + '.out')
-
-        
+        save_data(result, out_dir+'/{}_'.format(count) + os.path.basename(in_file).split("_")[0] + '.out')
+        count+=1
+     
+    count=0
     #query the grids 
-    input_data = input_data_backup
-    result=[None]*len(input_data)
     for in_file in param['grid_files']:
+        input_data = input_data_backup
+        result=[None]*len(input_data)
         for region in sorted(param['regions']):
             print(region)
             ret = query_grid(input_data, in_file, region)
@@ -206,8 +208,8 @@ def main():
             
             input_data = new_input_data
                     
-        save_data(result, out_dir+'/0_' + os.path.basename(in_file).split("-")[0] + '.out')
-   
+        save_data(result, out_dir+'/{}_'.format(count) + os.path.basename(in_file).split("-")[0] + '.out')
+        count+=1
     toc=time.time()
     print("Time taken:", toc-tic, " seconds")
 main()
