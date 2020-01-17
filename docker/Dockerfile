@@ -30,9 +30,9 @@ RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda2-latest
      ~/miniconda.sh -b -p /opt/conda && \
      rm ~/miniconda.sh 
      
-RUN /opt/conda/bin/conda create -n py2GEOL python=2.7 scipy=1.2 scikit-learn=0.20 matplotlib=2.0 pyshp=1.2 numpy=1.15 jupyter=1.0 cartopy=0.17 pandas=0.24 notebook=5.7.4 netCDF4
+RUN /opt/conda/bin/conda create -n py2GEOL python=2.7 scipy=1.2 scikit-learn=0.20 matplotlib=2.0 pyshp=1.2 numpy=1.15 jupyter=1.0 cartopy=0.17 pandas=0.24 notebook=5.7.4 netCDF4 opencv
 
-RUN /opt/conda/bin/conda create -n pyGEOL python=3.7 scipy=1.2 scikit-learn=0.20 matplotlib=3.0 pyshp=2.0 numpy=1.16 jupyter=1.0 cartopy=0.17 pandas=0.24 notebook=5.7.4 netCDF4
+RUN /opt/conda/bin/conda create -n pyGEOL python=3.7 scipy=1.2 scikit-learn=0.20 matplotlib=3.0 pyshp=2.0 numpy=1.16 jupyter=1.0 cartopy=0.17 pandas=0.24 notebook=5.7.4 netCDF4 opencv
 
 #Make the workspace persistant
 VOLUME /workspace

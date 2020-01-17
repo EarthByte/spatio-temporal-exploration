@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+#start with the main() function and follow the code
+#the input file is defined in parameters.py and has the same length with the output files.
+
 from netCDF4 import Dataset
 import scipy.spatial
 from scipy.signal import decimate
@@ -5,7 +10,7 @@ from scipy.interpolate import griddata
 import numpy as np
 import time, math, pickle, os, urllib, csv
 import pygplates
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 import shapefile
 import cv2
 
@@ -13,7 +18,7 @@ from parameters import parameters as param
 
 #construct the grid tree
 grid_x, grid_y = np.mgrid[-180:181, -90:91]
-grid_points = [pygplates.PointOnSphere((row[1],row[0])).to_xyz() for row in zip(grid_x.flatten(), grid_y.flatten())]
+grid_points = [pygplates.PointOnSphere((float(row[1]), float(row[0]))).to_xyz() for row in zip(grid_x.flatten(), grid_y.flatten())]
 grid_tree = scipy.spatial.cKDTree(grid_points)
 
 rotation_model = pygplates.RotationModel(param['rotation_files']) #load rotation model
@@ -30,6 +35,7 @@ def save_data(data, filename):
         for row in data:
             if row:
                 f.write(','.join(['{:.2f}'.format(i) for i in row]))
+                if len(row) == 2: f.write(', NO_DATA')#the row only contains reconstructed coordinates, no associated data found.
             else:
                 f.write('NO_DATA')
             f.write('\n')
@@ -50,17 +56,17 @@ def save_data(data, filename):
 def query_vector(sample_points, vector_file, region):
     #prepare the list for result data and insert indices for input points 
     ret=[]
-    indices = []
+    indices_bak = []
     for i in range(len(sample_points)):
         ret.append([None, None])
-        indices.append(sample_points[i][0]) #keep a copy of the original indices
+        indices_bak.append(sample_points[i][0]) #keep a copy of the original indices
         sample_points[i][0] = i
         
     #sort and group by time to improve performance
     sorted_points = sorted(sample_points, key = lambda x: int(x[3])) #sort by time
     from itertools import groupby
     for t, group in groupby(sorted_points, lambda x: int(x[3])):  #group by time
-        print(vector_file.format(time=t))
+        print('querying '+vector_file.format(time=t))
         # build the points tree at time t
         data=np.loadtxt(vector_file.format(time=t)) 
 
@@ -86,10 +92,10 @@ def query_vector(sample_points, vector_file, region):
         for point, dist, idx in zip(grouped_points, dists, indices):
             if idx < len(data):
                 ret[point[0]] = ret[point[0]] + [dist] + list(data[idx])
-        
+    
     #restore original indices
-    for i in range(len(indices)):
-        sample_points[i][0] = indices[i]
+    for i in range(len(indices_bak)):
+        sample_points[i][0] = indices_bak[i]
     return ret
    
     
@@ -108,17 +114,17 @@ def query_vector(sample_points, vector_file, region):
 def query_grid(sample_points, grid_file, region):
     #prepare the list for result data and insert indices for input points 
     ret=[]
-    indices = []
+    indices_bak = []
     for i in range(len(sample_points)):
         ret.append([None, None])
-        indices.append(sample_points[i][0]) #keep a copy of the original indices
+        indices_bak.append(sample_points[i][0]) #keep a copy of the original indices
         sample_points[i][0] = i
         
     #sort and group by time to improve performance
     sorted_points = sorted(sample_points, key = lambda x: int(x[3])) #sort by time
     from itertools import groupby
     for t, group in groupby(sorted_points, lambda x: int(x[3])):  #group by time
-        print(grid_file.format(time=t))
+        print('querying '+grid_file.format(time=t))
         age_grid_fn = grid_file.format(time=t)
 
         rasterfile = Dataset(age_grid_fn,'r')
@@ -148,8 +154,8 @@ def query_grid(sample_points, grid_file, region):
                 ret[point[0]] = ret[point[0]] + [region] + [np.nanmean(z[neighbors])]
                         
     #restore original indices
-    for i in range(len(indices)):
-        sample_points[i][0] = indices[i]
+    for i in range(len(indices_bak)):
+        sample_points[i][0] = indices_bak[i]
     return ret
 
 def main():
@@ -157,7 +163,7 @@ def main():
     
     #load input data
     input_data=[]
-    with open('input_data_example.csv') as csvfile:
+    with open( param['input_file']) as csvfile:
         r = csv.reader(csvfile, delimiter=',')
         for row in r:
             input_data.append([int(row[0]), float(row[1]), float(row[2]), int(row[3]), int(row[4])])
@@ -165,7 +171,7 @@ def main():
     input_data_backup = input_data
     
     #create output dir
-    out_dir='coreg_output'
+    out_dir=param['output_dir']
     if not os.path.isdir(out_dir):
         os.mkdir(out_dir)
    
@@ -175,19 +181,20 @@ def main():
         input_data = input_data_backup
         result=[None]*len(input_data)
         for region in sorted(param['regions']):
-            print(region)
+            print('region of interest: {}'.format(region))
+            print('the length of input data is: {}'.format(len(input_data)))
+            
             ret = query_vector(input_data, in_file, region)
             
             new_input_data=[]
             for i in range(len(input_data)):
-                if len(ret[i]) > 2:
-                    result[input_data[i][0]] = ret[i] #save the result
-                else:
+                result[input_data[i][0]] = ret[i] #save the result
+                if not len(ret[i]) > 2:
                     new_input_data.append(input_data[i])#prepare the input data to query again with a bigger region
             
             input_data = new_input_data
                     
-        save_data(result, out_dir+'/{}_'.format(count) + os.path.basename(in_file).split("_")[0] + '.out')
+        save_data(result, out_dir+'/{}_vector_'.format(count) + os.path.basename(in_file).split("_")[0] + '.out')
         count+=1
      
     count=0
@@ -196,20 +203,24 @@ def main():
         input_data = input_data_backup
         result=[None]*len(input_data)
         for region in sorted(param['regions']):
-            print(region)
+            print('region of interest: {}'.format(region))
+            print('the length of input data is: {}'.format(len(input_data)))
+            
             ret = query_grid(input_data, in_file, region)
             
             new_input_data=[]
             for i in range(len(input_data)):
-                if len(ret[i]) > 2:
-                    result[input_data[i][0]] = ret[i] #save the result
-                else:
+                result[input_data[i][0]] = ret[i] #save the result
+                if not len(ret[i]) > 2:
                     new_input_data.append(input_data[i])#prepare the input data to query again with a bigger region
             
             input_data = new_input_data
                     
-        save_data(result, out_dir+'/{}_'.format(count) + os.path.basename(in_file).split("-")[0] + '.out')
+        save_data(result, out_dir+'/{}_grid_'.format(count) + os.path.basename(in_file).split("-")[0] + '.out')
         count+=1
+        
     toc=time.time()
     print("Time taken:", toc-tic, " seconds")
-main()
+  
+if __name__ == "__main__":
+    main()
