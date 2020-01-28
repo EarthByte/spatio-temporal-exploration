@@ -59,28 +59,26 @@ def main(input_filename, output_filename_stem, variable_name, region, trench_poi
     print(len(result_index))
 
     # create a point shapefile
-    sf = shapefile.Writer(shapefile.POINT)
-    # for every record there must be a corresponding geometry.
-    sf.autoBalance = 1
+    with shapefile.Writer(output_filename_stem) as sf:
+        # for every record there must be a corresponding geometry.
+        sf.autoBalance = 1
 
-    # create the field names and data type for each.
-    sf.field("AGE", "N")
-    sf.field(c, "C")
-    #"C": Characters, text.
-    #"N": Numbers, with or without decimals.
-    #"F": Floats (same as "N").
-    #"L": Logical, for boolean True/False values.
-    #"D": Dates.
-    #"M": Memo, has no meaning within a GIS and is part of the xbase spec instead.
-    print('saving file...')
-    for idx in result_index:
-        # create the point geometry
-        sf.point(df.iloc[idx][1],df.iloc[idx][0]) #lon lat
-        #print(df.iloc[idx][1],df.iloc[idx][0])
-        # add attribute data
-        sf.record(df.iloc[idx][2], df.iloc[idx][3])
-
-    sf.save(output_filename_stem+'.shp')
+        # create the field names and data type for each.
+        sf.field("AGE", "N")
+        sf.field(c, "C")
+        #"C": Characters, text.
+        #"N": Numbers, with or without decimals.
+        #"F": Floats (same as "N").
+        #"L": Logical, for boolean True/False values.
+        #"D": Dates.
+        #"M": Memo, has no meaning within a GIS and is part of the xbase spec instead.
+        print('saving file...')
+        for idx in result_index:
+            # create the point geometry
+            sf.point(df.iloc[idx][1],df.iloc[idx][0]) #lon lat
+            #print(df.iloc[idx][1],df.iloc[idx][0])
+            # add attribute data
+            sf.record(df.iloc[idx][2], df.iloc[idx][3])
 
     df.iloc[result_index].to_csv(output_filename_stem+".csv",index=False,float_format='%.4f')
 
