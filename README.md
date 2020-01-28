@@ -40,6 +40,8 @@ pandas -- https://pandas.pydata.org/
 
 netCDF4 -- https://github.com/Unidata/netcdf4-python
 
+opencv -- https://opencv.org/
+
 EarthByte/PlateTectonicTools -- https://github.com/EarthByte/PlateTectonicTools.git. Edit "plate_tectonic_tools_path" parameter in python/parameters.py to specify the location of PlateTectonicTools code.
 
 ### FAQ
