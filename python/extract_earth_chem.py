@@ -9,6 +9,8 @@ import numpy as np
 import pygplates
 from parameters import parameters as param
 
+convergence_filename_template = './convergence_data/subStats_{time:.2f}.csv'
+
 # input: degrees between two points on sphere
 # output: straight distance between the two points (assume the earth radius is 1)
 # to get the kilometers, use the return value to multiply by the real earth radius
@@ -30,8 +32,7 @@ def main(input_filename, output_filename_stem, variable_name, region, trench_poi
     # build the tree of the trench points
     t=0
     if not trench_points_filename:
-        trench_points_filename = param['convergence_data_dir'] + param['convergence_data_filename_prefix'] +\
-            '_{:0.2f}'.format(t) + "." + param['convergence_data_filename_ext']
+        trench_points_filename = convergence_filename_template.format(time=t)
     data=np.loadtxt(trench_points_filename)
     print(trench_points_filename)
 
