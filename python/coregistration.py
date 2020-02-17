@@ -31,11 +31,17 @@ def degree_to_straight_distance(degree):
 
 
 def save_data(data, filename):
+    row_len=0
+    for row in data:
+        if len(row)>row_len:
+            row_len = len(row)
     with open(filename,"w+") as f:
         for row in data:
             if row:
                 f.write(','.join(['{:.2f}'.format(i) for i in row]))
-                if len(row) == 2: f.write(', NO_DATA')#the row only contains reconstructed coordinates, no associated data found.
+                if len(row)<row_len: #keep the length of rows the same
+                    f.write(',')
+                    f.write(','.join(['nan']*(row_len-len(row))))
             else:
                 f.write('NO_DATA')
             f.write('\n')
@@ -188,6 +194,13 @@ def write_readme_file():
     #1 reconstructed lat 
     #2 region of interest(in degree) and 
     #3 grid mean value
+''')
+        f.write('''the input attributes are
+    #0 index 
+    #1 lon 
+    #2 lat 
+    #3 reconstruction time 
+    #4 plate id
 ''')
         
 def main():
