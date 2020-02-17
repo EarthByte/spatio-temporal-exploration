@@ -158,7 +158,48 @@ def query_grid(sample_points, grid_file, region):
         sample_points[i][0] = indices_bak[i]
     return ret
 
+def write_readme_file():
+    with open(param['output_dir']+'/readme.pls', "w+") as f:
+        f.write('''the convergence attributes are
+    #0 reconstructed lon 
+    #1 reconstructed lat 
+    #2 distance to the nearest trench point
+    #3 subducting convergence (relative to trench) velocity magnitude (in cm/yr)
+    #4 subducting convergence velocity obliquity angle (angle between trench normal vector and convergence velocity vector)
+    #5 trench absolute (relative to anchor plate) velocity magnitude (in cm/yr)
+    #6 trench absolute velocity obliquity angle (angle between trench normal vector and trench absolute velocity vector)
+    #7 length of arc segment (in degrees) that current point is on
+    #8 trench normal azimuth angle (clockwise starting at North, ie, 0 to 360 degrees) at current point
+    #9 subducting plate ID
+    #10 trench plate ID
+    #11 distance (in degrees) along the trench line to the nearest trench edge
+    #12 the distance (in degrees) along the trench line from the start edge of the trench
+    #13 convergence velocity orthogonal (in cm/yr)
+    #14 convergence velocity parallel  (in cm/yr)
+    #15 the trench plate absolute velocity orthogonal (in cm/yr)
+    #16 the trench plate absolute velocity orthogonal (in cm/yr)
+    #17 the subducting plate absolute velocity magnitude (in cm/yr)
+    #18 the subducting plate absolute velocityobliquity angle (in degrees)
+    #19 the subducting plate absolute velocity orthogonal
+    #20 the subducting plate absolute velocity parallel
+''')
+        f.write('''the grid attributes are
+    #0 reconstructed lon 
+    #1 reconstructed lat 
+    #2 region of interest(in degree) and 
+    #3 grid mean value
+''')
+        
 def main():
+    #create output dir
+    out_dir=param['output_dir']
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
+        
+    write_readme_file()
+    
+    os.system(f"cp {param['input_file']} {param['output_dir']}")
+
     tic=time.time()
     
     #load input data
@@ -169,11 +210,6 @@ def main():
             input_data.append([int(row[0]), float(row[1]), float(row[2]), int(row[3]), int(row[4])])
     #print(input_data)
     input_data_backup = input_data
-    
-    #create output dir
-    out_dir=param['output_dir']
-    if not os.path.isdir(out_dir):
-        os.mkdir(out_dir)
    
     count=0
     #query the vector data
