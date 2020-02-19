@@ -5,10 +5,11 @@ parameters = {
     #You can clone the code repository here https://github.com/EarthByte/PlateTectonicTools.git
     "plate_tectonic_tools_path" : "../../PlateTectonicTools/ptt/",
     
-    #the file which contains the seed points 
-    'input_file' : 'input_data_example.csv',
+    #the file which contains the seed points.
+    #coregistration input file 
+    'input_file' : 'coregistration_input_data_example.csv',
     
-    #folder contains the output files.
+    #folder contains the coregistration output files.
     'output_dir' : 'coreg_output',
     
     "time" : {
