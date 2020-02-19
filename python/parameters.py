@@ -53,4 +53,7 @@ parameters = {
         #more grid files below...
     ],
     
+    "convergence_data_filename_prefix" : "subStats",
+    "convergence_data_filename_ext" : "csv",
+    "convergence_data_dir" : "./convergence_data/",
 }

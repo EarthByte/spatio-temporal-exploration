@@ -34,7 +34,7 @@ import numpy as np
 #18 the subducting plate absolute velocity orthogonal       
 #19 the subducting plate absolute velocity parallel
 
-if __name__ == '__main__':
+def run_it():
     pp = pprint.PrettyPrinter(indent=2)
     pp.pprint(p)  
     
@@ -67,5 +67,8 @@ if __name__ == '__main__':
         p['convergence_data_filename_prefix'], p['convergence_data_filename_ext'], result_dir))
     print("")
     print('Convergence completed successfully!')
-    print('The result data has been saved in {}!'.format(result_dir))        
+    print('The result data has been saved in {}!'.format(result_dir)) 
+    
+if __name__ == '__main__':
+    run_it()
 
