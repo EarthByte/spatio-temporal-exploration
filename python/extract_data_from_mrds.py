@@ -20,15 +20,21 @@ def degree_to_straight_distance(degree):
 def main(input_filename, output_filename_stem, variable_name, region, trench_points_filename=None):
     print('loading data...')
     data=pd.read_csv(input_filename, sep=',', skipinitialspace=True)
-    c=variable_name
+    c='commod1'
     #print(data.columns.values)
-    a=data.columns.get_loc(c)
-    df=data.iloc[:,[6,7,10,a]] 
-    #6,7,10 are the default column numbers for Long, Lat and Age. Please check their position beforehand 
-    df=df[(df!=0).all(1)]
+    aaa=data.columns.get_loc('commod1')
+    bbb=data.columns.get_loc('longitude')
+    ccc=data.columns.get_loc('latitude')
+    df=data.iloc[:,[bbb, ccc, aaa]] 
     df=df.dropna()
-    #print(len(df))
+    df=df[df['commod1'].str.contains(variable_name)]
 
+    #lala=set()
+    #for index, row in df.iterrows():
+    #    for e in row[2].split(','):
+    #        lala.add(e.strip())
+    #print(lala)
+    
     # build the tree of the trench points
     t=0
     if not trench_points_filename:
@@ -45,7 +51,7 @@ def main(input_filename, output_filename_stem, variable_name, region, trench_poi
     for index, row in df.iterrows():
         index_count+=1
         try:
-            candidates.append(pygplates.PointOnSphere((row[0], row[1])).to_xyz())#lat, lon
+            candidates.append(pygplates.PointOnSphere((row[1], row[0])).to_xyz())#lat, lon
             data_index.append(index_count)
         except pygplates.InvalidLatLonError:
             #print('invalid lat or lon: ',row)
@@ -64,7 +70,7 @@ def main(input_filename, output_filename_stem, variable_name, region, trench_poi
         sf.autoBalance = 1
 
         # create the field names and data type for each.
-        sf.field("AGE", "N")
+        #sf.field("AGE", "N")
         sf.field(c, "C")
         #"C": Characters, text.
         #"N": Numbers, with or without decimals.
@@ -78,15 +84,15 @@ def main(input_filename, output_filename_stem, variable_name, region, trench_poi
             sf.point(df.iloc[idx][1],df.iloc[idx][0]) #lon lat
             #print(df.iloc[idx][1],df.iloc[idx][0])
             # add attribute data
-            sf.record(df.iloc[idx][2], df.iloc[idx][3])
+            sf.record(df.iloc[idx][2])
 
-    df.iloc[result_index].to_csv(output_filename_stem+".csv",index=False,float_format='%.4f')
+    df.iloc[result_index].to_csv(output_filename_stem+".csv", sep='\t', index=False,float_format='%.4f')
 
 if __name__ == "__main__":
     __description__ = \
-    """Extract data from EarthChem data. A shafefile and a csv file will be created for the extracted data. 
+    """Extract data from MRDS. A shafefile and a csv file will be created for the extracted data. 
     
-        Example: python extract_earth_chem.py EarthChem_all.csv output CU 5
+        Example: python extract_data_from_mrds.py mrds.csv output CU 5
     """
     
     # The command-line parser.
@@ -95,7 +101,7 @@ if __name__ == "__main__":
         formatter_class=argparse.RawDescriptionHelpFormatter)
     
     parser.add_argument('input_filename', type=str,
-            help='the name of the EarthChem data file name')
+            help='the name of the MRDS data file name')
     
     parser.add_argument('output_filename_stem', type=str,
             help='the name stem of the output file, {output_filename_stem}.shp and {output_filename_stem}.csv will be created.')
@@ -115,4 +121,5 @@ if __name__ == "__main__":
     
     
     main(args.input_filename, args.output_filename_stem, args.variable_name, args.region, args.trench_points_filename)
+
 

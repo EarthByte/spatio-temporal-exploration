@@ -79,7 +79,7 @@ def run_it():
     # data are ready and write them to file
     with open('coregistration_input_data_example.csv',"w+") as f:
         for row in data:
-            print(row)
+            #print(row)
             if row:
                 f.write('{0:d}, {1:.2f}, {2:.2f}, {3:d}, {4:d}'.format(row[0],row[1],row[2],row[3],row[4]))
             f.write('\n')

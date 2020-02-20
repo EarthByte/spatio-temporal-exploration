@@ -72,7 +72,7 @@ def query_vector(sample_points, vector_file, region):
     sorted_points = sorted(sample_points, key = lambda x: int(x[3])) #sort by time
     from itertools import groupby
     for t, group in groupby(sorted_points, lambda x: int(x[3])):  #group by time
-        print('querying '+vector_file.format(time=t))
+        #print('querying '+vector_file.format(time=t))
         # build the points tree at time t
         data=np.loadtxt(vector_file.format(time=t)) 
 
@@ -130,7 +130,7 @@ def query_grid(sample_points, grid_file, region):
     sorted_points = sorted(sample_points, key = lambda x: int(x[3])) #sort by time
     from itertools import groupby
     for t, group in groupby(sorted_points, lambda x: int(x[3])):  #group by time
-        print('querying '+grid_file.format(time=t))
+        #print('querying '+grid_file.format(time=t))
         age_grid_fn = grid_file.format(time=t)
 
         rasterfile = Dataset(age_grid_fn,'r')
@@ -271,6 +271,7 @@ def main():
         count+=1
         
     toc=time.time()
+    print(f'The coregistration output data have been saved in folder {out_dir} successfully!')
     print("Time taken:", toc-tic, " seconds")
   
 if __name__ == "__main__":
