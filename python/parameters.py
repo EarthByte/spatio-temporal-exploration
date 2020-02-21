@@ -44,7 +44,7 @@ parameters = {
     
     #a list of grid files from which the coregistration scripts query data
     "grid_files" : [
-        '../data/AgeGrids/EarthByte_AREPS_v1.15_Muller_etal_2016_AgeGrid-{time:d}.nc'
+        './AgeGrids/EarthByte_AREPS_v1.15_Muller_etal_2016_AgeGrid-{time:d}.nc'
         #can be downloaded from
         #https://www.earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2016_AREPS/               
         #Muller_etal_2016_AREPS_Agegrids/Muller_etal_2016_AREPS_Agegrids_v1.15/netCDF-4_0-230Ma/ 
