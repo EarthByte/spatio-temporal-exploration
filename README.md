@@ -8,7 +8,7 @@
 
 The easist way to run the workflow.ipynb is use docker.
 
-#### step 1: go into docker folder and run "docker build -t pyg ."
+#### step 1: go into docker folder and run `docker build -t pyg .`
 #### step 2: docker run -p 8888:8888 -it --rm -v\`pwd\`:/workspace pyg /bin/bash -c "source activate pyGEOL && jupyter notebook --allow-root --ip=0.0.0.0 --no-browser" (IMPORTANT!!! run this command in the root directory of this repository)
 #### step 3: in web browser, go to http://127.0.0.1:8888
 
