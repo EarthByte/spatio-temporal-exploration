@@ -19,7 +19,7 @@ docker run -p 8888:8888 -it --rm -v\`pwd\`:/workspace my_spatial_temporal_explor
 
 (IMPORTANT!!! run this command in the root directory of this repository)
 
-#### step 3: in web browser, go to http://127.0.0.1:8888
+#### step 3: in web browser, go to http://127.0.0.1:8888 and open python/workflow.ipynb.
 
 ### Dependencies:
 
