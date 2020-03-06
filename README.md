@@ -8,19 +8,24 @@
 
 The easist way to run the workflow.ipynb is use docker.
 
-#### step 1: go into docker folder and run 
-`docker build -t pyg .`
+#### Step 0: install Docker 
+go to https://docs.docker.com/install/ and follow instructions.
 
-#### step 2: 
-docker run -p 8888:8888 -it --rm -v\`pwd\`:/workspace pyg /bin/bash -c "source activate pyGEOL && jupyter notebook --allow-root --ip=0.0.0.0 --no-browser" 
+#### step 1: go into docker folder and run 
+`docker build -t my_spatial_temporal_exploration .`
+
+#### step 2: go back to the root folder of this repository
+docker run -p 8888:8888 -it --rm -v\`pwd\`:/workspace my_spatial_temporal_exploration /bin/bash -c "source activate pyGEOL && jupyter notebook --allow-root --ip=0.0.0.0 --no-browser" 
 
 (IMPORTANT!!! run this command in the root directory of this repository)
 
-#### step 3: in web browser, go to http://127.0.0.1:8888
+#### step 3: in web browser, go to http://127.0.0.1:8888 and open python/workflow.ipynb.
 
 ### Dependencies:
 
 If you would like to setup the runtime environment on your computer, you need to install the following dependencies in Python3.
+
+(Again, please consider using Docker if you are not too good with computers.)
 
 For example, you can create a conda enviroment with the command below
 
