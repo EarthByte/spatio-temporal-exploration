@@ -44,6 +44,8 @@ RUN mkdir /data
 RUN wget -P /data https://www.earthbyte.org/webdav/ftp/earthbyte/EarthChem/EarthChem_all.csv
 RUN wget -P /data https://mrdata.usgs.gov/mrds/mrds-csv.zip
 RUN unzip /data/mrds-csv.zip -d /data
+RUN rm /data/mrds-csv.zip
+
 
 #Make the workspace persistant
 VOLUME /workspace
