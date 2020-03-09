@@ -20,4 +20,13 @@ python/pids.txt
 python/pids_same.txt
 python/trench_points.csv
 step_1.ipynb
-
+EarthChem_CU.csv
+EarthChem_CU.dbf
+EarthChem_CU.shp
+EarthChem_CU.shx
+coreg_output/
+mrds.csv
+mrds_copper.csv
+mrds_copper.dbf
+mrds_copper.shp
+mrds_copper.shx
