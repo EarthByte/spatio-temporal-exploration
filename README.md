@@ -2,7 +2,7 @@ This repo is an example of how machine learning can be used to carry out spatio-
 
 ### Getting started
 
-#### Step 1: Setup Runtime Environment. 
+#### Step 1: Setup Runtime Environment
 Use Docker or install the dependencies in your computer.
 
 #### Step 2: Start Jupter Notebook
@@ -11,14 +11,14 @@ If you are using Docker, run the Docker container in the root folder of this rep
 
 #### Step 3: Open Notebooks
 Go into the "python" folder, open the notebooks and follow the instructions inside.
-The notebooks has been named with step numbers. 
+The notebooks have been named with step numbers. 
 
 ### Docker
 
 The easist way to run the workflow.ipynb is use docker.
 
 #### Step 0: install Docker 
-go to https://docs.docker.com/install/ and follow instructions.
+go to https://docs.docker.com/install/ and follow the instructions inside.
 
 #### step 1: go into docker folder and run 
 `docker build -t my_spatial_temporal_exploration .`
