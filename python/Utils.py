@@ -1,3 +1,4 @@
+import requests, os
 from matplotlib.colors import LinearSegmentedColormap
 
 def get_age_grid_color_map_from_cpt(cpt_file):
@@ -164,3 +165,30 @@ def get_subduction_teeth(lons, lats, tesselation_degrees=5, triangle_base_length
 
         PA = PB
     return teeth
+
+def get_subduction_geometries(subduction_geoms, shared_boundary_sections):
+    for shared_boundary_section in shared_boundary_sections:
+        if shared_boundary_section.get_feature().get_feature_type() != pygplates.FeatureType.gpml_subduction_zone:
+                continue
+        for shared_sub_segment in shared_boundary_section.get_shared_sub_segments():
+            subduction_polarity = shared_sub_segment.get_feature().get_enumeration(pygplates.PropertyName.gpml_subduction_polarity)
+            if subduction_polarity == "Left":
+                subduction_geoms.append((shared_sub_segment.get_resolved_geometry(),-1))
+            else:
+                subduction_geoms.append((shared_sub_segment.get_resolved_geometry(),1))
+    return 
+
+def download_agegrid(time):
+    if not os.path.isdir('./AgeGrids'):
+        os.system('mkdir AgeGrids')
+
+    # download the age grid if necessary
+    url_temp='https://www.earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2016_AREPS/Muller_etal_2016_AREPS_Agegrids/Muller_etal_2016_AREPS_Agegrids_v1.15/netCDF-4_0-230Ma/EarthByte_AREPS_v1.15_Muller_etal_2016_AgeGrid-{}.nc'
+    file_temp='./AgeGrids/EarthByte_AREPS_v1.15_Muller_etal_2016_AgeGrid-{}.nc'
+    agegrid_file = file_temp.format(time)
+    print('Downloading age grids...')
+    if not os.path.isfile(agegrid_file):
+        myfile = requests.get(url_temp.format(time))
+        open(agegrid_file, 'wb').write(myfile.content)
+    return agegrid_file
+ 
