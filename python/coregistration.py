@@ -17,8 +17,8 @@ import cv2
 from parameters import parameters as param
 
 #construct the grid tree
-grid_x, grid_y = np.mgrid[-180:181, -90:91]
-grid_points = [pygplates.PointOnSphere((float(row[1]), float(row[0]))).to_xyz() for row in zip(grid_x.flatten(), grid_y.flatten())]
+grid_x, grid_y = np.mgrid[-90:91, -180:181]
+grid_points = [pygplates.PointOnSphere((float(row[0]), float(row[1]))).to_xyz() for row in zip(grid_x.flatten(), grid_y.flatten())]
 grid_tree = scipy.spatial.cKDTree(grid_points)
 
 rotation_model = pygplates.RotationModel(param['rotation_files']) #load rotation model
@@ -136,6 +136,7 @@ def query_grid(sample_points, grid_file, region):
         rasterfile = Dataset(age_grid_fn,'r')
         z = rasterfile.variables['z'][:] #masked array
         zz = cv2.resize(z, dsize=(316, 181), interpolation=cv2.INTER_CUBIC)
+        zz = np.roll(zz,180)
         z = np.ma.asarray(zz.flatten())
         
         # reconstruct the points
