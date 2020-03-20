@@ -1,5 +1,6 @@
 import requests, os
 from matplotlib.colors import LinearSegmentedColormap
+import scipy.spatial
 
 def get_age_grid_color_map_from_cpt(cpt_file):
     values=[]
@@ -259,4 +260,22 @@ def plate_temp(age, z, PLATE_THICKNESS) :
         t = t + 2.0 * sum * (T_MANTLE - T_SURFACE)/math.pi + (T_MANTLE - T_SURFACE) * z/PLATE_THICKNESS
     
     return t
- 
+
+# input: degrees between two points on sphere
+# output: straight distance between the two points (assume the earth radius is 1)
+# to get the kilometers, use the return value to multiply by the real earth radius
+def degree_to_straight_distance(degree):
+    return math.sin(math.radians(degree)) / math.sin(math.radians(90 - degree/2.))
+
+
+def select_points_in_region(candidate_lons, candidate_lats, trench_lons, trech_lats, region=5):
+    #build the tree
+    points_3d = [pygplates.PointOnSphere((lat,lon)).to_xyz() for lon, lat in zip(trench_lons, trech_lats)]
+    points_tree = scipy.spatial.cKDTree(points_3d)
+
+    candidates = [pygplates.PointOnSphere((lat,lon)).to_xyz() for lon, lat in zip(candidate_lons, candidate_lats)]
+    
+    dists, indices = points_tree.query(
+                candidates, k=1, distance_upper_bound=degree_to_straight_distance(region))
+
+    return indices<len(points_3d)
