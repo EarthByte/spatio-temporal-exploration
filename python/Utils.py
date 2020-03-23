@@ -1,6 +1,8 @@
 import requests, os
+from netCDF4 import Dataset
 from matplotlib.colors import LinearSegmentedColormap
 import scipy.spatial
+import cv2
 
 def get_age_grid_color_map_from_cpt(cpt_file):
     values=[]
@@ -279,3 +281,25 @@ def select_points_in_region(candidate_lons, candidate_lats, trench_lons, trech_l
                 candidates, k=1, distance_upper_bound=degree_to_straight_distance(region))
 
     return indices<len(points_3d)
+
+def query_raster(raster_name, lons, lats):
+    #construct the grid tree
+    grid_x, grid_y = np.mgrid[-90:91, -180:181]
+    grid_points = [pygplates.PointOnSphere((float(row[0]), float(row[1]))).to_xyz() for row in zip(grid_x.flatten(), grid_y.flatten())]
+
+    rasterfile = Dataset(raster_name,'r')
+    z = rasterfile.variables['z'][:] #masked array
+    zz = cv2.resize(z, dsize=(361, 181), interpolation=cv2.INTER_CUBIC)
+    zz = np.roll(zz,180)
+    z = np.ma.asarray(zz.flatten())
+    
+    grid_points = np.asarray(grid_points)
+    z_idx = ~np.isnan(z)
+    z = z[z_idx]
+    grid_tree = scipy.spatial.cKDTree(grid_points[z_idx])
+    
+    points=[pygplates.PointOnSphere((float(row[1]), float(row[0]))).to_xyz() for row in zip(lons, lats)]
+    
+    # query the tree 
+    dists, indices = grid_tree.query(points, k=1) 
+    return z[indices]

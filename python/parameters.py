@@ -44,7 +44,10 @@ parameters = {
     
     #a list of grid files from which the coregistration scripts query data
     "grid_files" : [
-        './AgeGrids/EarthByte_AREPS_v1.15_Muller_etal_2016_AgeGrid-{time:d}.nc'
+        './AgeGrids/EarthByte_AREPS_v1.15_Muller_etal_2016_AgeGrid-{time:d}.nc',
+        '../data/carbonate_sed_thickness/decompacted_sediment_thickness_0.5_{time:d}.nc',
+        '../data/predicted_oceanic_sediment_thickness/sed_thick_0.2d_{time:d}.nc',
+        '../data/ocean_crust_CO2_grids/ocean_crust_carb_percent_{time:d}.nc'
         #can be downloaded from
         #https://www.earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2016_AREPS/               
         #Muller_etal_2016_AREPS_Agegrids/Muller_etal_2016_AREPS_Agegrids_v1.15/netCDF-4_0-230Ma/ 
