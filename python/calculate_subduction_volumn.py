@@ -63,10 +63,10 @@ for age in range(231):
         trench_data[:,0],
         trench_data[:,1])
     
-    results = np.c_[subduction_volume_km3y,decompacted_sediment_thickness,sed_thick,ocean_crust_carb_percent ]
+    results = np.c_[seafloor_ages,subduction_volume_km3y,decompacted_sediment_thickness,sed_thick,ocean_crust_carb_percent ]
     print(results.shape)
-    np.savetxt(f'./convergence_data/subStats_ex_{age}.csv', 
+    np.savetxt(f'../data/subStats_ex_{age}.csv', 
                results, delimiter=',', fmt='%.6f', 
-               header='subduction_volume_km3y, decompacted_sediment_thickness, sed_thick_0.2d, ocean_crust_carb_percent')
+               header='seafloor_age,subduction_volume_km3y,decompacted_sediment_thickness,sed_thick_0.2d,ocean_crust_carb_percent')
     
     

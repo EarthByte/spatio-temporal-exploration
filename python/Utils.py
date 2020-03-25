@@ -303,3 +303,42 @@ def query_raster(raster_name, lons, lats):
     # query the tree 
     dists, indices = grid_tree.query(points, k=1) 
     return z[indices]
+
+def print_columns():
+    columns = [
+        'reconstructed mineral deposits longitude',
+        'reconstructed input point latitude',
+        'distance to the nearest trench point',
+        'the index of trench point',
+        'trench point longitude',
+        'trench point latitude',
+        'subducting convergence (relative to trench) velocity magnitude (in cm/yr)',
+        'subducting convergence velocity obliquity angle (angle between trench normal vector and convergence velocity vector)',
+        'trench absolute (relative to anchor plate) velocity magnitude (in cm/yr)',
+        'trench absolute velocity obliquity angle (angle between trench normal vector and trench absolute velocity vector)',
+        'length of arc segment (in degrees) that current point is on',
+        'trench normal azimuth angle (clockwise starting at North, ie, 0 to 360 degrees) at current point',
+        'subducting plate ID',
+        'trench plate ID',
+        'distance (in degrees) along the trench line to the nearest trench edge',
+        'the distance (in degrees) along the trench line from the start edge of the trench',
+        'convergence velocity orthogonal (in cm/yr)',
+        'convergence velocity parallel (in cm/yr)',
+        'the trench plate absolute velocity orthogonal (in cm/yr)',
+        'the trench plate absolute velocity orthogonal (in cm/yr)',
+        'the subducting plate absolute velocity magnitude (in cm/yr)',
+        'the subducting plate absolute velocityobliquity angle (in degrees)',
+        'the subducting plate absolute velocity orthogonal',
+        'the subducting plate absolute velocity parallel',
+        'sea floor age',
+        'subduction volume(km3y)', 
+        'decompacted sediment thickness', 
+        'sediment thickness 0.2d', 
+        'ocean crust carb percent'
+      ]
+    for i in range(len(columns)):
+        print('*', i, columns[i])
+
+
+
+

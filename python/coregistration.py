@@ -97,7 +97,7 @@ def query_vector(sample_points, vector_file, region):
 
         for point, dist, idx in zip(grouped_points, dists, indices):
             if idx < len(data):
-                ret[point[0]] = ret[point[0]] + [dist] + list(data[idx])
+                ret[point[0]] = ret[point[0]] + [dist, idx] + list(data[idx])
     
     #restore original indices
     for i in range(len(indices_bak)):
@@ -223,7 +223,10 @@ def main():
     with open( param['input_file']) as csvfile:
         r = csv.reader(csvfile, delimiter=',')
         for row in r:
-            input_data.append([int(row[0]), float(row[1]), float(row[2]), int(row[3]), int(row[4])])
+            try:
+                input_data.append([int(row[0]), float(row[1]), float(row[2]), int(row[3]), int(row[4])])
+            except:
+                continue
     #print(input_data)
     input_data_backup = input_data
    
