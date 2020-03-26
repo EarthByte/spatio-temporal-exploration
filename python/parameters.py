@@ -7,7 +7,7 @@ parameters = {
     
     #the file which contains the seed points.
     #coregistration input file 
-    'input_file' : 'coregistration_input_data_example.csv',
+    'input_file' : 'coregistration_input_data_example_155.csv',
     
     #folder contains the coregistration output files.
     'output_dir' : 'coreg_output',

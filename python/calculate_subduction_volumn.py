@@ -65,7 +65,7 @@ for age in range(231):
     
     results = np.c_[seafloor_ages,subduction_volume_km3y,decompacted_sediment_thickness,sed_thick,ocean_crust_carb_percent ]
     print(results.shape)
-    np.savetxt(f'../data/subStats_ex_{age}.csv', 
+    np.savetxt(f'../data/subStats_ex/subStats_ex_{age}.csv', 
                results, delimiter=',', fmt='%.6f', 
                header='seafloor_age,subduction_volume_km3y,decompacted_sediment_thickness,sed_thick_0.2d,ocean_crust_carb_percent')
     

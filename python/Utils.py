@@ -307,7 +307,7 @@ def query_raster(raster_name, lons, lats):
 def print_columns():
     columns = [
         'reconstructed mineral deposits longitude',
-        'reconstructed input point latitude',
+        'reconstructed mineral deposits latitude',
         'distance to the nearest trench point',
         'the index of trench point',
         'trench point longitude',
@@ -325,9 +325,9 @@ def print_columns():
         'convergence velocity orthogonal (in cm/yr)',
         'convergence velocity parallel (in cm/yr)',
         'the trench plate absolute velocity orthogonal (in cm/yr)',
-        'the trench plate absolute velocity orthogonal (in cm/yr)',
+        'the trench plate absolute velocity parallel (in cm/yr)',
         'the subducting plate absolute velocity magnitude (in cm/yr)',
-        'the subducting plate absolute velocityobliquity angle (in degrees)',
+        'the subducting plate absolute velocity obliquity angle (in degrees)',
         'the subducting plate absolute velocity orthogonal',
         'the subducting plate absolute velocity parallel',
         'sea floor age',
