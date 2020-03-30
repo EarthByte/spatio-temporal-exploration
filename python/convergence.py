@@ -8,8 +8,9 @@ import pprint, sys, math, os
 sys.path.append(p["plate_tectonic_tools_path"])
 from subduction_convergence import subduction_convergence_over_time
 import numpy as np
+import pandas as pd
 
-#basicall the subduction_convergence.py does all the work.
+#basicall the subduction_convergence.py does most of the work.
 #see https://github.com/EarthByte/PlateTectonicTools/blob/master/ptt/subduction_convergence.py
 
 #The columns in the output file
@@ -28,7 +29,7 @@ import numpy as np
 #12 convergence velocity orthogonal (in cm/yr)
 #13 convergence velocity parallel  (in cm/yr) 
 #14 the trench plate absolute velocity orthogonal (in cm/yr)
-#15 the trench plate absolute velocity orthogonal (in cm/yr)
+#15 the trench plate absolute velocity parallel (in cm/yr)
 #16 the subducting plate absolute velocity magnitude (in cm/yr)
 #17 the subducting plate absolute velocityobliquity angle (in degrees)
 #18 the subducting plate absolute velocity orthogonal       
@@ -37,6 +38,13 @@ import numpy as np
 def run_it():
     pp = pprint.PrettyPrinter(indent=2)
     pp.pprint(p)  
+    
+    start_time = p["time"]["start"]
+    end_time = p["time"]["end"]
+    time_step = p["time"]["step"]
+    conv_dir = p['convergence_data_dir']
+    conv_prefix = p['convergence_data_filename_prefix']
+    conv_ext = p['convergence_data_filename_ext']
     
     kwargs = {    
         'output_distance_to_nearest_edge_of_trench':True,
@@ -47,27 +55,35 @@ def run_it():
         'output_subducting_absolute_velocity_components':True}
 
     return_code = subduction_convergence_over_time(
-            p['convergence_data_filename_prefix'],
-            p['convergence_data_filename_ext'],
+            conv_prefix,
+            conv_ext,
             p["rotation_files"],
             p["topology_files"],
             math.radians(p["threshold_sampling_distance_degrees"]),
-            p["time"]["start"],
-            p["time"]["end"],
-            p["time"]["step"],
+            start_time,
+            end_time,
+            time_step,
             p["velocity_delta_time"],
             p['anchor_plate_id'],
             output_gpml_filename = None,
             **kwargs)
     
-    result_dir=p['convergence_data_dir']
-    if not os.path.exists(result_dir):
-        os.makedirs(result_dir)
-    os.system('mv {0}*{1} {2}'.format( 
-        p['convergence_data_filename_prefix'], p['convergence_data_filename_ext'], result_dir))
+    if not os.path.exists(conv_dir):
+        os.makedirs(conv_dir)
+    os.system('mv {0}*{1} {2}'.format(conv_prefix, conv_ext, conv_dir))
+
+    #There are some more data acquired from various grids. 
+    #We need them later. Append the additional data to the subduction convergence kinematics statistics.
+    #append more data
+    for age in reversed(range(start_time, end_time+1, time_step)):
+        d1 = pd.read_csv(conv_dir + conv_prefix + '_' + f'{age:.2f}' + '.' + conv_ext, sep=' ', header=None)
+        d2 = pd.read_csv(f'../data/subStats_ex/subStats_ex_{age}.csv')
+        d3 = pd.concat([d1,d2], axis=1)
+        d3.to_csv(conv_dir + conv_prefix + '_' + f'{age:.2f}' + '.' + conv_ext, header=False, sep=' ', index=False, float_format='%.4f')
+         
     print("")
     print('Convergence completed successfully!')
-    print('The result data has been saved in {}!'.format(result_dir)) 
+    print('The result data has been saved in {}!'.format(conv_dir)) 
     
 if __name__ == '__main__':
     run_it()
