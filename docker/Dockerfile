@@ -1,17 +1,3 @@
-# To build this docker file
-# do the following in the "docker" folder (the folder contains this Dockerfile)
-# git clone https://github.com/EarthByte/PlateTectonicTools.git
-# download https://www.earthbyte.org/webdav/ftp/earthbyte/EarthChem/EarthChem_all.csv
-# download mrds.csv from https://mrdata.usgs.gov/mrds/mrds-csv.zip
-# docker build -t pyg .
-
-# To run this, with an interactive shell temrinal, mounting your current host directory in the container directory at /workspace use:
-# docker run -it --rm -v`pwd`:/workspace pyg /bin/bash
-
-# To run a jupyter notebook server with the python conda environement
-# docker run -p 8888:8888 -it --rm -v`pwd`:/workspace pyg /bin/bash -c "source activate pyGEOL && jupyter notebook --allow-root --ip=0.0.0.0 --no-browser"
-
-# Pull base image.
 FROM ubuntu:bionic
 MAINTAINER Nathaniel Butterworth
 
