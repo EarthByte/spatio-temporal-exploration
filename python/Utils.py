@@ -333,7 +333,7 @@ def print_columns():
         'sea floor age',
         'subduction volume(km3y)', 
         'decompacted sediment thickness', 
-        'sediment thickness 0.2d', 
+        'sediment thickness', 
         'ocean crust carb percent'
       ]
     for i in range(len(columns)):
