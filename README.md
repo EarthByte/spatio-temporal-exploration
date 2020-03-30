@@ -23,6 +23,8 @@ go to https://docs.docker.com/install/ and follow the instructions inside.
 #### step 1: go into docker folder and run 
 `docker build -t my_spatial_temporal_exploration .`
 
+Alternatively, you can pull the docker container image from dockerhub.com. Run `docker pull gplates/spatial-temporal-exploration` and `docker tag gplates/spatial-temporal-exploration my_spatial_temporal_exploration`.
+
 #### step 2: go back to the root folder of this repository
 docker run -p 8888:8888 -it --rm -v\`pwd\`:/workspace my_spatial_temporal_exploration /bin/bash -c "source activate pyGEOL && jupyter notebook --allow-root --ip=0.0.0.0 --no-browser" 
 
