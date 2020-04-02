@@ -45,6 +45,9 @@ def run_it():
     conv_dir = p['convergence_data_dir']
     conv_prefix = p['convergence_data_filename_prefix']
     conv_ext = p['convergence_data_filename_ext']
+
+    if not os.path.exists(conv_dir):
+        os.makedirs(conv_dir)
     
     kwargs = {    
         'output_distance_to_nearest_edge_of_trench':True,
@@ -55,7 +58,7 @@ def run_it():
         'output_subducting_absolute_velocity_components':True}
 
     return_code = subduction_convergence_over_time(
-            conv_prefix,
+            conv_dir+conv_prefix,
             conv_ext,
             p["rotation_files"],
             p["topology_files"],
@@ -68,9 +71,6 @@ def run_it():
             output_gpml_filename = None,
             **kwargs)
     
-    if not os.path.exists(conv_dir):
-        os.makedirs(conv_dir)
-    os.system('mv {0}*{1} {2}'.format(conv_prefix, conv_ext, conv_dir))
 
     #There are some more data acquired from various grids. 
     #We need them later. Append the additional data to the subduction convergence kinematics statistics.
@@ -79,7 +79,7 @@ def run_it():
         d1 = pd.read_csv(conv_dir + conv_prefix + '_' + f'{age:.2f}' + '.' + conv_ext, sep=' ', header=None)
         d2 = pd.read_csv(f'../data/subStats_ex/subStats_ex_{age}.csv')
         d3 = pd.concat([d1,d2], axis=1)
-        d3.to_csv(conv_dir + conv_prefix + '_' + f'{age:.2f}' + '.' + conv_ext, header=False, sep=' ', index=False, float_format='%.4f')
+        d3.to_csv(conv_dir + conv_prefix + '_' + f'{age:.2f}' + '.' + conv_ext, header=False, sep=' ', index=False, float_format='%.2f')
          
     print("")
     print('Convergence completed successfully!')
