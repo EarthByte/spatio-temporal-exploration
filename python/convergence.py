@@ -49,13 +49,8 @@ def run_it():
     if not os.path.exists(conv_dir):
         os.makedirs(conv_dir)
     
-    rotation_files=[]
-    for f in p["rotation_files"]:
-        rotation_files += glob.glob(f)
-   
-    topology_files=[]
-    for f in p["topology_files"]:
-        topology_files += glob.glob(f)
+    rotation_files = Utils.get_files(p["rotation_files"])
+    topology_files = Utils.get_files(p["topology_files"])
    
     kwargs = {    
         'output_distance_to_nearest_edge_of_trench':True,
@@ -88,7 +83,7 @@ def run_it():
         #d3 = pd.concat([d1,d2], axis=1)
         #d3.to_csv(conv_dir + conv_prefix + '_' + f'{age:.2f}' + '.' + conv_ext, header=False, sep=' ', index=False, float_format='%.2f')
         print(age, end=' ')
-        trench_file = f'./convergence_data/subStats_{age}.00.csv'
+        trench_file = conv_dir + conv_prefix + f'_{age:.2f}.' + conv_ext
         trench_data= pd.read_csv(trench_file, sep=' ', header=None)
         
         seafloor_ages=Utils.query_raster(
@@ -137,9 +132,8 @@ def run_it():
             header=['trench_lon','trench_lat','conv_rate','conv_angle','trench_abs_rate','trench_abs_angle',
             'arc_len','trench_norm','subducting_pid','trench_pid','dist_nearest_edge','dist_from_start',
             'conv_ortho','conv_paral','trench_abs_ortho','trench_abs_paral','subducting_abs_rate',
-            'subducting_abs_angle','subducting_abs_ortho', 'subducting_abs_paral',
-            'seafloor_age','subduction_volume_km3y','carbonate_sediment_thickness','total_sediment_thick',
-                    'ocean_crust_carb_percent'])
+            'subducting_abs_angle','subducting_abs_ortho', 'subducting_abs_paral'] + trench_data.columns[-5:].tolist()
+            )
         
     print("")
     print('Convergence completed successfully!')

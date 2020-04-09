@@ -1,8 +1,10 @@
-import requests, os
+import requests, os, glob, errno
 from netCDF4 import Dataset
 from matplotlib.colors import LinearSegmentedColormap
 import scipy.spatial
+import pandas as pd
 import cv2
+from parameters import parameters as params
 
 def get_age_grid_color_map_from_cpt(cpt_file):
     values=[]
@@ -339,6 +341,32 @@ def print_columns():
     for i in range(len(columns)):
         print('*', i, columns[i])
 
+# expand *.rot, *.gpml
+def get_files(names):
+    files=[]
+    for f in names:
+        files += glob.glob(f)
+    return files
 
+#
+def get_trench_points(age, top_left_lon=None, top_left_lat=None,
+                      bottom_right_lon=None, bottom_right_lat=None):
+    conv_dir = params['convergence_data_dir']
+    conv_prefix = params['convergence_data_filename_prefix']
+    conv_ext = params['convergence_data_filename_ext']
+    
+    fn = conv_dir + conv_prefix + f'_{age:.2f}.' + conv_ext
+    
+    if not os.path.isfile(fn):
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), fn)
+        
+    data = pd.read_csv(fn)
+    
+    if [top_left_lon, top_left_lat, bottom_right_lon, bottom_right_lat].count(None) == 0:
+        data = data[data['trench_lon']>top_left_lon]
+        data = data[data['trench_lon']<bottom_right_lon]
+        data = data[data['trench_lat']>bottom_right_lat]
+        data = data[data['trench_lat']<top_left_lat]
+    return data
 
 
