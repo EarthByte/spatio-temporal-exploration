@@ -62,7 +62,7 @@ def generate_trench_points(start_time, end_time, time_step):
     if not os.path.isfile('./convergence_data/subStats_0.00.csv'):
         sys.exit('ERROR!!! File ./convergence_data/subStats_0.00.csv not found! Run convergence.py first!')
     #load files
-    f = np.loadtxt('./convergence_data/subStats_0.00.csv') #all subduction points at time 0
+    f = np.loadtxt('./convergence_data/subStats_0.00.csv', skiprows=1, delimiter=',') #all subduction points at time 0
     #TODO: choose the points in which you are interested
     trench_points=f[(f[:,9])==201] #subduction points in south america 
     i=0

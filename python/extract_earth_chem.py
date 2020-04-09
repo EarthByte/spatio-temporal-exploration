@@ -33,7 +33,7 @@ def main(input_filename, output_filename_stem, variable_name, region, trench_poi
     t=0
     if not trench_points_filename:
         trench_points_filename = convergence_filename_template.format(time=t)
-    data=np.loadtxt(trench_points_filename)
+    data=np.loadtxt(trench_points_filename,skiprows=1, delimiter=',')
     #print(trench_points_filename)
 
     points_3d = [pygplates.PointOnSphere((row[1],row[0])).to_xyz() for row in data]

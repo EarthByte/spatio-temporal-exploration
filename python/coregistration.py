@@ -8,7 +8,7 @@ import scipy.spatial
 from scipy.signal import decimate
 from scipy.interpolate import griddata
 import numpy as np
-import time, math, pickle, os, urllib, csv
+import time, math, pickle, os, urllib, csv, glob
 import pygplates
 #from matplotlib import pyplot as plt
 import shapefile
@@ -21,7 +21,11 @@ grid_x, grid_y = np.mgrid[-90:91, -180:181]
 grid_points = [pygplates.PointOnSphere((float(row[0]), float(row[1]))).to_xyz() for row in zip(grid_x.flatten(), grid_y.flatten())]
 grid_tree = scipy.spatial.cKDTree(grid_points)
 
-rotation_model = pygplates.RotationModel(param['rotation_files']) #load rotation model
+rotation_files=[]
+for f in param["rotation_files"]:
+    rotation_files += glob.glob(f)
+
+rotation_model = pygplates.RotationModel(rotation_files) #load rotation model
 
 # input: degrees between two points on sphere
 # output: straight distance between the two points (assume the earth radius is 1)
@@ -74,7 +78,7 @@ def query_vector(sample_points, vector_file, region):
     for t, group in groupby(sorted_points, lambda x: int(x[3])):  #group by time
         #print('querying '+vector_file.format(time=t))
         # build the points tree at time t
-        data=np.loadtxt(vector_file.format(time=t)) 
+        data=np.loadtxt(vector_file.format(time=t), skiprows=1, delimiter=',') 
 
         #assume first column is lon and second column is lat
         points_3d = [pygplates.PointOnSphere((row[1],row[0])).to_xyz() for row in data]
