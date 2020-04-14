@@ -11,6 +11,7 @@ import os, sys
 import numpy as np
 import shapefile
 from parameters import parameters as param
+import Utils
 
 # the age is a floating-point number. map the floating-point number to the nereast integer time in the range
 def get_time_from_age(ages, start, end, step):
@@ -59,16 +60,11 @@ def generate_random_deposits(data, start_time, end_time):
 #                                 
 def generate_trench_points(start_time, end_time, time_step):
     trench_data=[]
-    if not os.path.isfile('./convergence_data/subStats_0.00.csv'):
-        sys.exit('ERROR!!! File ./convergence_data/subStats_0.00.csv not found! Run convergence.py first!')
-    #load files
-    f = np.loadtxt('./convergence_data/subStats_0.00.csv', skiprows=1, delimiter=',') #all subduction points at time 0
-    #TODO: choose the points in which you are interested
-    trench_points=f[(f[:,9])==201] #subduction points in south america 
+    trench_points = Utils.get_trench_points(0,-85,5,-70,-60) #subduction points in south america 
     i=0
     for t in range(start_time, end_time, time_step):
-        for p in trench_points:
-            trench_data.append([i, p[0], p[1], t, 201]) # we de
+        for index, p in trench_points.iterrows():
+            trench_data.append([i, p['trench_lon'], p['trench_lat'], t, p['trench_pid']]) 
             i+=1   
     return trench_data    
 
