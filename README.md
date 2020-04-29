@@ -6,7 +6,7 @@ This repo is an example of how machine learning can be used to carry out spatio-
 Use Docker or install the dependencies in your computer.
 
 #### Step 2: Start Jupter Notebook
-Run `python3 jupyter notebook` in the root folder of this repoisitory(usually the folder "spatial-temporal-exploration").
+Run `python3 jupyter notebook` in the root folder of this repoisitory(usually the folder "spatio-temporal-exploration").
 If you are using Docker, run the Docker container in the root folder of this repoisitory (See Docker section -> step2).
 
 #### Step 3: Open Notebooks
@@ -21,12 +21,12 @@ The easist way to run the workflow.ipynb is use docker.
 go to https://docs.docker.com/install/ and follow the instructions inside.
 
 #### step 1: go into docker folder and run 
-`docker build -t my_spatial_temporal_exploration .`
+`docker build -t my_spatio_temporal_exploration .`
 
-Alternatively, you can pull the docker container image from dockerhub.com. Run `docker pull gplates/spatial-temporal-exploration` and `docker tag gplates/spatial-temporal-exploration my_spatial_temporal_exploration`.
+Alternatively, you can pull the docker container image from dockerhub.com. Run `docker pull gplates/spatio-temporal-exploration` and `docker tag gplates/spatio-temporal-exploration my_spatio_temporal_exploration`.
 
 #### step 2: go back to the root folder of this repository
-docker run -p 8888:8888 -it --rm -v\`pwd\`:/workspace my_spatial_temporal_exploration /bin/bash -c "source activate pyGEOL && jupyter notebook --allow-root --ip=0.0.0.0 --no-browser" 
+docker run -p 8888:8888 -it --rm -v\`pwd\`:/workspace my_spatio_temporal_exploration /bin/bash -c "source activate pyGEOL && jupyter notebook --allow-root --ip=0.0.0.0 --no-browser" 
 
 (IMPORTANT!!! run this command in the root directory of this repository)
 
